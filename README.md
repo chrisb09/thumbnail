@@ -118,6 +118,7 @@ This package is inspired from npm module filepreview.
   <summary>
   The following list of document formats are currently available for exporting to:
   </summary>
+  
 - bib - BibTeX [.bib]
 - doc - Microsoft Word 97/2000/XP [.doc]
 - doc6 - Microsoft Word 6.0 [.doc]
@@ -144,10 +145,13 @@ This package is inspired from npm module filepreview.
 - vor3 - StarWriter 3.0 Template [.vor]
 - xhtml - XHTML Document [.html]
 </details>
+
+
 <details>
   <summary>
   The following list of graphics formats are currently available for exporting to:
   </summary>
+
 - bmp - Windows Bitmap [.bmp]
 - emf - Enhanced Metafile [.emf]
 - eps - Encapsulated PostScript [.eps]
@@ -184,6 +188,7 @@ This package is inspired from npm module filepreview.
   <summary>
   The following list of presentation formats are currently available for exporting to:
   </summary>
+
 - bmp - Windows Bitmap [.bmp]
 - emf - Enhanced Metafile [.emf]
 - eps - Encapsulated PostScript [.eps]
@@ -229,6 +234,7 @@ This package is inspired from npm module filepreview.
   <summary>
   The following list of spreadsheet formats are currently available for exporting to:
   </summary>
+
 - csv - Text CSV [.csv]
 - dbf - dBase [.dbf]
 - dif - Data Interchange Format [.dif]
@@ -306,6 +312,7 @@ This package is inspired from npm module filepreview.
   <summary>
   The following list of video formats are currently available for exporting to:
   </summary>
+
 - 3g2 3GP2 (3GPP2 file format)
 - 3gp 3GP (3GPP file format)
 - 4xm 4X Technologies
