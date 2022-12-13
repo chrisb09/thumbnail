@@ -98,18 +98,18 @@ def generate_thumbnail(input, output, options):
     
         
     if filetype == 'video':
-        command = 'ffmpeg -y -i '+input+' -vf thumbnail '+vidcommand+' -frames:v 1 '+output
+        command = 'ffmpeg -y -i "'+input+'" -vf thumbnail '+vidcommand+' -frames:v 1 "'+output+'"'
         # print(command)
         os.system(command)
     elif filetype == 'image':
-        command = 'convert '+options['trim']+' -quality '+options['quality']+' '+imgcommand+' -colorspace RGB '+input+'[0] '+output
+        command = 'convert '+options['trim']+' -quality '+options['quality']+' '+imgcommand+' -colorspace RGB "'+input+'"[0] "'+output+'"'
         os.system(command)
     elif filetype == 'other':
 
         tmppath = './' + str(randint(1000, 9999)) + '.pdf'
-        command = 'unoconv -e PageRange=1 -o '+tmppath+' '+input
+        command = 'unoconv -e PageRange=1 -o '+tmppath+' "'+input+'"'
         os.system(command)
-        command = 'convert '+options['trim']+' -quality '+options['quality']+' '+imgcommand+' -colorspace RGB '+tmppath+'[0] '+output
+        command = 'convert '+options['trim']+' -quality '+options['quality']+' '+imgcommand+' -colorspace RGB '+tmppath+'[0] "'+output+'"'
         # print(command)
         os.system(command)
         os.remove(tmppath)
