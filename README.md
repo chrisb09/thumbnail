@@ -45,7 +45,7 @@ Sample code:
 ```python
 from thumbnail import generate_thumbnail
 
-// generate_thumbnail(input, output, options)
+# generate_thumbnail(input, output, options)
 
 options = {
 	'trim': False,
