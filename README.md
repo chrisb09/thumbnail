@@ -26,7 +26,7 @@ thumbnail depends on Imagemagick for image manipulation
 apt-get install imagemagick
 ```
 
-thumbnail also needs curl to be installled
+thumbnail also needs curl to be installed
 
 ```bash
 apt-get install curl
@@ -35,6 +35,15 @@ apt-get install curl
 To install this package:
 
 ```bash
+pip install thumbnail
+```
+
+### Copy & Paste install commands
+
+for debian and ubuntu based systems
+
+```bash
+sudo apt -y install unoconv ffmpeg imagemagick curl
 pip install thumbnail
 ```
 
@@ -104,8 +113,11 @@ This package is inspired from npm module filepreview.
 
 ## Supported document types
 
-The following list of document formats are currently available for exporting to:
 
+<details>
+  <summary>
+  The following list of document formats are currently available for exporting to:
+  </summary>
 - bib - BibTeX [.bib]
 - doc - Microsoft Word 97/2000/XP [.doc]
 - doc6 - Microsoft Word 6.0 [.doc]
@@ -131,9 +143,11 @@ The following list of document formats are currently available for exporting to:
 - vor4 - StarWriter 4.0 Template [.vor]
 - vor3 - StarWriter 3.0 Template [.vor]
 - xhtml - XHTML Document [.html]
-
-The following list of graphics formats are currently available for exporting to:
-
+</details>
+<details>
+  <summary>
+  The following list of graphics formats are currently available for exporting to:
+  </summary>
 - bmp - Windows Bitmap [.bmp]
 - emf - Enhanced Metafile [.emf]
 - eps - Encapsulated PostScript [.eps]
@@ -163,9 +177,13 @@ The following list of graphics formats are currently available for exporting to:
 - wmf - Windows Metafile [.wmf]
 - xhtml - XHTML [.xhtml]
 - xpm - X PixMap [.xpm]
+</details>
 
-The following list of presentation formats are currently available for exporting to:
 
+<details>
+  <summary>
+  The following list of presentation formats are currently available for exporting to:
+  </summary>
 - bmp - Windows Bitmap [.bmp]
 - emf - Enhanced Metafile [.emf]
 - eps - Encapsulated PostScript [.eps]
@@ -204,9 +222,13 @@ The following list of presentation formats are currently available for exporting
 - wmf - Windows Metafile [.wmf]
 - xhtml - XHTML [.xml]
 - xpm - X PixMap [.xpm]
+</details>
 
-The following list of spreadsheet formats are currently available for exporting to:
 
+<details>
+  <summary>
+  The following list of spreadsheet formats are currently available for exporting to:
+  </summary>
 - csv - Text CSV [.csv]
 - dbf - dBase [.dbf]
 - dif - Data Interchange Format [.dif]
@@ -232,8 +254,13 @@ The following list of spreadsheet formats are currently available for exporting 
 - xlt - Microsoft Excel 97/2000/XP Template [.xlt]
 - xlt5 - Microsoft Excel 5.0 Template [.xlt]
 - xlt95 - Microsoft Excel 95 Template [.xlt]
+</details>
 
-The following list of open office formats are currently available for exporting to:
+
+<details>
+  <summary>
+  The following list of open office formats are currently available for exporting to:
+  </summary>
 
 - Microsoft Word 6.0/95/97/2000/XP (.doc and .dot)
 - Microsoft Word 2003 XML (.xml)
@@ -272,9 +299,13 @@ The following list of open office formats are currently available for exporting 
 - Unified Office Format presentation (.uop, .uof)
 - CGM – Computer Graphics Metafile (.cgm)
 - Portable Document Format (.pdf)
+</details>
 
-The following list of video formats are currently available for exporting to:
 
+<details>
+  <summary>
+  The following list of video formats are currently available for exporting to:
+  </summary>
 - 3g2 3GP2 (3GPP2 file format)
 - 3gp 3GP (3GPP file format)
 - 4xm 4X Technologies
@@ -575,3 +606,4 @@ The following list of video formats are currently available for exporting to:
 - xwma Microsoft xWMA
 - yop Psygnosis YOP
 - yuv4mpegpipe YUV4MPEG pipe
+</details>
