@@ -51,8 +51,9 @@ options = {
 	'width': 300,
 	'quality': 85,
 	'type': 'thumbnail', #makes sure exactly width and height are enforeced
-  'transparency': False
+	'transparency': False
 }
+
 generate_thumbnail('sample.docx', './thumbnails/thumbnail.png', options)
 ```
   

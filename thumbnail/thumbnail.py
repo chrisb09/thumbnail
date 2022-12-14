@@ -115,13 +115,17 @@ def generate_thumbnail(input, output, options, verbose=False):
     else:
         options['transparency'] = ''
 
-
-    if options['thumbnail']:
-        imgcommand = '-extent '+options['width']+'X'+options['height']
-        vidcommand = ''
-    elif options['thumbnail']:
+    if has_key(options, 'thumbnail'):
+        if options['thumbnail']:
+            imgcommand = '-extent '+options['width']+'X'+options['height']
+            vidcommand = ''
+        else:
+            imgcommand = ''
+            vidcommand = ''
+    else:
         imgcommand = ''
         vidcommand = ''
+    
     
     if verbose:
         print(options)
@@ -165,12 +169,12 @@ def generate_thumbnail(input, output, options, verbose=False):
     
         
     if filetype == 'video':
-        command = 'ffmpeg -hide_banner -loglevel error -y -i "'+input+'" -vf thumbnail '+vidcommand+' -frames:v 1 -vf scale=w='+options['width']+':h='+options['height']+':force_original_aspect_ratio=decrease "'+output+'"'
+        command = 'ffmpeg -hide_banner -loglevel error -y -i "'+input+'" -vf "thumbnail" '+vidcommand+' -frames:v 1 -vf scale=w='+options['width']+':h='+options['height']+':force_original_aspect_ratio=decrease "'+output+'"'
         if verbose:
             print(command)
         os.system(command)
     elif filetype == 'image':
-        command = 'convert '+options['trim']+' -quality '+options['quality']+' '+imgcommand+' '+options['transparency']+' "'+input+'"[0] "'+output+'"'
+        command = 'convert -thumbnail "'+options['width']+'X'+options['height']+'" '+options['trim']+' -quality '+options['quality']+' '+imgcommand+' '+options['transparency']+' "'+input+'"[0] "'+output+'"'
         if verbose:
             print(command)
         os.system(command)
@@ -183,7 +187,10 @@ def generate_thumbnail(input, output, options, verbose=False):
                 print(command)
             os.system(command)
 
-            command = 'convert -thumbnail "'+options['width']+'X'+options['height']+'>" '+options['trim']+' -quality '+options['quality']+' '+imgcommand+' -gravity center '+tmppath+'[0] "'+output+'"'
+            while not os.path.exists(tmppath):
+                time.sleep(0.5)
+
+            command = 'convert -thumbnail "'+options['width']+'X'+options['height']+'" '+options['trim']+' -quality '+options['quality']+' '+imgcommand+' -gravity center '+tmppath+'[0] "'+output+'"'
             if verbose:
                 print(command)
             os.system(command)
