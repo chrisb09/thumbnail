@@ -1,10 +1,68 @@
-import os, json
+import os, json, signal, subprocess, time
 from random import randint 
 
+from threading import Lock
 
+from subprocess import DEVNULL, STDOUT, check_output
 
+unoserver = None
+unoserver_lock = Lock()
+unoserver_running_lock = Lock()
 
-def generate_thumbnail(input, output, options):
+def does_unoserver_exist(verbose=False):
+    fails = 0
+    os.system("echo 'test' > test.txt")
+    while fails<3:
+        try:
+            if os.system('unoconvert test.txt test.pdf > /dev/null 2>&1') == 0:
+                break
+            time.sleep(1)
+            fails += 1
+        except:
+            fails += 1
+            time.sleep(1)
+    if verbose:
+        print("Unoserver exists: "+str(fails<3))
+    return fails < 3
+        
+
+def open_unoserver(verbose=False):
+    if verbose:
+        print("open_unoserver")
+    global unoserver
+    if does_unoserver_exist(verbose):
+        return True
+
+    if unoserver_lock.acquire(blocking=False):
+        try:
+            print("start unoserver")
+            unoserver = subprocess.Popen(["unoserver"])
+            fails = 0
+            os.system("echo 'test' > test.txt")
+            while fails<30:
+                try:
+                    time.sleep(1)
+                    if os.system('unoconvert test.txt test.pdf  > /dev/null 2>&1') == 0:
+                        break
+                except:
+                    fails += 1
+        finally:
+            unoserver_lock.release()
+        if fails<30:
+            return True
+        return False
+    print("Retry finding unoserver...")
+    return open_unoserver()
+    
+
+def close_unoserver():
+    if unoserver is not None:
+        print("stop unoserver")
+        os.killpg(os.getpgid(unoserver.pid), signal.SIGTERM)
+
+        
+
+def generate_thumbnail(input, output, options, verbose=False):
     try:
         if os.path.isfile(input):
             pass
@@ -36,7 +94,7 @@ def generate_thumbnail(input, output, options):
     def has_key(dict, key):
         return True if key in dict else False
     
-    options['type'] = options['type'] if has_key(options, 'type') else 'thumbnail'
+    options['thumbnail'] = options['thumbnail'] if has_key(options, 'thumbnail') else True
     options['width'] = str(options['width']) if has_key(options, "width") else '300'
     options['height'] = str(options['height']) if has_key(options, "height") else '300'
     options['quality'] = str(options['quality']) if has_key(options, "quality") else '85'
@@ -49,17 +107,27 @@ def generate_thumbnail(input, output, options):
     else:
         options['trim'] = ''
 
+    if has_key(options, 'transparency'):
+        if options['transparency'] is True:
+            options['transparency'] = '-background transparent'
+        else:
+            options['transparency'] = ''
+    else:
+        options['transparency'] = ''
 
-    if options['type'] == 'thumbnail':
-        imgcommand = '-geometry '+options['height']+' -extent '+options['width']+'X'+options['height']
+
+    if options['thumbnail']:
+        imgcommand = '-extent '+options['width']+'X'+options['height']
         vidcommand = ''
-    elif options['type']:
+    elif options['thumbnail']:
         imgcommand = ''
         vidcommand = ''
     
-    # print(options)
+    if verbose:
+        print(options)
 
-    # print(input_ext, output_ext)
+    if verbose:
+        print(input_ext, output_ext)
     
     try:
         if output_ext in ['png', 'jpg', 'gif']:
@@ -73,7 +141,6 @@ def generate_thumbnail(input, output, options):
     mimedb_path = os.path.dirname(os.path.realpath(__file__)) + '/mimedb.json'
     with open(mimedb_path) as json_file:
         mimedb = json.load(json_file)
-    # print(mimedb[0])
 
     for k in mimedb:
         if 'extensions' in mimedb[k]:
@@ -98,20 +165,30 @@ def generate_thumbnail(input, output, options):
     
         
     if filetype == 'video':
-        command = 'ffmpeg -y -i "'+input+'" -vf thumbnail '+vidcommand+' -frames:v 1 "'+output+'"'
-        # print(command)
+        command = 'ffmpeg -hide_banner -loglevel error -y -i "'+input+'" -vf thumbnail '+vidcommand+' -frames:v 1 -vf scale=w='+options['width']+':h='+options['height']+':force_original_aspect_ratio=decrease "'+output+'"'
+        if verbose:
+            print(command)
         os.system(command)
     elif filetype == 'image':
-        command = 'convert '+options['trim']+' -quality '+options['quality']+' '+imgcommand+' -colorspace RGB "'+input+'"[0] "'+output+'"'
+        command = 'convert '+options['trim']+' -quality '+options['quality']+' '+imgcommand+' '+options['transparency']+' "'+input+'"[0] "'+output+'"'
+        if verbose:
+            print(command)
         os.system(command)
     elif filetype == 'other':
 
-        tmppath = './' + str(randint(1000, 9999)) + '.pdf'
-        command = 'unoconv -e PageRange=1 -o '+tmppath+' "'+input+'"'
-        os.system(command)
-        command = 'convert '+options['trim']+' -quality '+options['quality']+' '+imgcommand+' -colorspace RGB '+tmppath+'[0] "'+output+'"'
-        # print(command)
-        os.system(command)
-        os.remove(tmppath)
+        tmppath = './' + str(randint(1000, 999999)) + '.pdf'
+        if open_unoserver(verbose):
+            command = 'unoconvert --convert-to pdf "'+input+'" "'+tmppath+'"'
+            if verbose:
+                print(command)
+            os.system(command)
+
+            command = 'convert -thumbnail "'+options['width']+'X'+options['height']+'>" '+options['trim']+' -quality '+options['quality']+' '+imgcommand+' -gravity center '+tmppath+'[0] "'+output+'"'
+            if verbose:
+                print(command)
+            os.system(command)
+            os.remove(tmppath)
+        else:
+            return False
         
     return True

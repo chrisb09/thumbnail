@@ -6,45 +6,34 @@ Thumbnail/Preview generator for 450 different filetypes in python.
 
 ## Pre-requisites
 
-This package has been thoroughly tested on Linux machines. If you're facing any issue post it on Github Issues.  
+This package has been tested on Linux based machines, but not extensively. If you're facing any issue post it on Github Issues.  
 
-thumbnail depends on unoconv.(Universal Office converter)
+thumbnail depends now on [unoserver](https://github.com/unoconv/unoserver/), a Universal Office converter. This converter requires a [LibreOffice](https://libreoffice.org/) installation to be present on your system.
+
+
+### Debian & Ubuntu
+
+Simple installation of dependendies on these common distros:
 
 ```bash
-apt-get install unoconv
+sudo apt -y install ffmpeg imagemagick curl libreoffice
+pip install unoserver
 ```
 
-thumbnail depends of ffmpeg for audio or video files
+## Installation
+
+As this is currently a fork installation is a bit less straight-forward.
+
+### Pip
+
+As the current version of `thumbnail` on pypi.org is outdated you need to install it manually.
+
+### Manual
 
 ```bash
-apt-get install ffmpeg
-```
-
-thumbnail depends on Imagemagick for image manipulation
-
-```bash
-apt-get install imagemagick
-```
-
-thumbnail also needs curl to be installed
-
-```bash
-apt-get install curl
-```
-
-To install this package:
-
-```bash
-pip install thumbnail
-```
-
-### Copy & Paste install commands
-
-for debian and ubuntu based systems
-
-```bash
-sudo apt -y install unoconv ffmpeg imagemagick curl
-pip install thumbnail
+git clone git@github.com:chrisb09/thumbnail.git
+cd thumbnail
+python3 setup.py install --user
 ```
 
 ## How to use
@@ -52,7 +41,7 @@ pip install thumbnail
 Sample code:
 
 ```python
-from thumbnail import generate_thumbnail
+import thumbnail
 
 # generate_thumbnail(input, output, options)
 
@@ -61,7 +50,8 @@ options = {
 	'height': 300,
 	'width': 300,
 	'quality': 85,
-	'type': 'thumbnail'
+	'type': 'thumbnail', #makes sure exactly width and height are enforeced
+  'transparency': False
 }
 generate_thumbnail('sample.docx', './thumbnails/thumbnail.png', options)
 ```
@@ -82,11 +72,26 @@ Height of the thumbnail in px.
 - width: Integer(default = 300) 
 Width of the thumbnail in px.
 - quality: Integer(default = 85) 
-Quality of the thumbnail on a scale of 1-100.
-- type: String(default = "thumbnail" 
-It takes two values "thumbnail" or "firstpage" 
-"thumbnail" = 300X300 image of the first page of the document. Height and Width can be changed by providing values in options 
-"firstpage" = snapshot of the document's first page.  
+Quality of the thumbnail on a scale of 1-100. Only affects lossy formats like jpg.
+- thumbnail: Boolean(default = True)
+Determines if the height and width dimensions both have to be met at the same time (True) or if they serve as an upper limit (False). Example: A 1920x1080 image will become 300x169 if set to False.
+
+### Closing the unoserver in the end
+
+To get the new unoconvert command working a unoserver is started in the background. This server is currently not closed automatically, but as a subprocess should be closed when your application is terminated. 
+Still, for anyone who wants to clean this up during runtime the `close_unoserver` function exists.
+
+```python
+import thumbnail
+
+...
+
+generate_thumbnail('sample.docx', './thumbnails/thumbnail.png', options)
+
+...
+
+close_unoserver()
+```
   
 ## Common Issues
 
@@ -100,14 +105,7 @@ It takes two values "thumbnail" or "firstpage"
 ```
 
 - You can either comment it or change rights to "read | write"
-- Reference: [https://askubuntu.com/questions/1181762/imagemagickconvert-im6-q16-no-images-defined](https://askubuntu.com/questions/1181762/imagemagickconvert-im6-q16-no-images-defined)
-
-**unoconv: Cannot find a suitable pyuno library and python binary combination in /usr/lib/libreoffice:**
-
-- Open /usr/bin/unoconv in the editor of your choice
-- Replace #!/usr/bin/env python3 with #!/usr/bin/python3
-- Reference: [https://github.com/unoconv/unoconv/issues/405](https://github.com/unoconv/unoconv/issues/405)  
-  
+- Reference: [https://askubuntu.com/questions/1181762/imagemagickconvert-im6-q16-no-images-defined](https://askubuntu.com/questions/1181762/imagemagickconvert-im6-q16-no-images-defined)  
   
 This package is inspired from npm module filepreview.
 
@@ -614,3 +612,12 @@ This package is inspired from npm module filepreview.
 - yop Psygnosis YOP
 - yuv4mpegpipe YUV4MPEG pipe
 </details>
+
+
+## TODO
+- [ ] Test extensively
+- [ ] Merge into original project
+- [ ] Close unoserver automatically
+- [ ] Add more File Types
+- [ ] Replace the random id system for unoconvert with something more elegant
+- [ ] Get rid of need for test.txt and test.pdf

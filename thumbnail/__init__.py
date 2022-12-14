@@ -1,1 +1,1 @@
-from .thumbnail import *
+from .thumbnail import generate_thumbnail, close_unoserver
