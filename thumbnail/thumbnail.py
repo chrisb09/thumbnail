@@ -9,22 +9,12 @@ unoserver = None
 unoserver_lock = Lock()
 unoserver_running_lock = Lock()
 
-unoserver_interface = ""
-
-if "UNOSERVER" in os.environ:
-    host = os.environ["UNOSERVER"]
-    unoserver_interface = "--interface "+host+" "
-    print(unoserver_interface)
-else:
-    print("No --interface set")
-    print(os.environ)
-
 def does_unoserver_exist(verbose=False):
     fails = 0
     os.system("echo 'test' > test.txt")
     while fails<3:
         try:
-            if os.system('unoconvert '+unoserver_interface+'test.txt test.pdf > /dev/null 2>&1') == 0:
+            if os.system('unoconvert test.txt test.pdf > /dev/null 2>&1') == 0:
                 break
             time.sleep(1)
             fails += 1
@@ -52,7 +42,7 @@ def open_unoserver(verbose=False):
             while fails<30:
                 try:
                     time.sleep(1)
-                    if os.system('unoconvert '+unoserver_interface+'test.txt test.pdf  > /dev/null 2>&1') == 0:
+                    if os.system('unoconvert test.txt test.pdf  > /dev/null 2>&1') == 0:
                         break
                 except:
                     fails += 1
@@ -192,7 +182,7 @@ def generate_thumbnail(input, output, options, verbose=False):
 
         tmppath = './' + str(randint(1000, 999999)) + '.pdf'
         if open_unoserver(verbose):
-            command = 'unoconvert '+unoserver_interface+'--convert-to pdf "'+input+'" "'+tmppath+'"'
+            command = 'unoconvert --convert-to pdf "'+input+'" "'+tmppath+'"'
             if verbose:
                 print(command)
             os.system(command)
