@@ -15,6 +15,9 @@ if "UNOSERVER" in os.environ:
     host = os.environ["UNOSERVER"]
     unoserver_interface = "--interface "+host+" "
     print(unoserver_interface)
+else:
+    print("No --interface set")
+    print(os.environ)
 
 def does_unoserver_exist(verbose=False):
     fails = 0
